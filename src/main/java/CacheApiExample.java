@@ -49,7 +49,9 @@ public class CacheApiExample {
             System.out.println();
             System.out.println(">>> Cache API example started.");
 
-            printMetrics(ignite);
+            System.out.println("#### Memory test before any operations");
+            show_memory_usage(ignite);
+
             CacheConfiguration<Integer, String> cfg = new CacheConfiguration<>();
 
             cfg.setCacheMode(CacheMode.PARTITIONED);
@@ -59,7 +61,8 @@ public class CacheApiExample {
             try (IgniteCache<Integer, String> cache = ignite.getOrCreateCache(cfg)) {
                 // Demonstrate atomic map operations.
                 atomicMapOperations(cache);
-                printMetrics(ignite);
+                System.out.println("#### Memory test after any operations");
+                show_memory_usage(ignite);
 
             }
             finally {
@@ -67,6 +70,21 @@ public class CacheApiExample {
                 ignite.destroyCache(CACHE_NAME);
             }
 
+        }
+    }
+
+
+    private static void show_memory_usage(Ignite ignite) throws IgniteException{
+
+        // Get the metrics of all the data regions configured on a node.
+        Collection<DataRegionMetrics> regionsMetrics = ignite.dataRegionMetrics();
+
+        for (DataRegionMetrics metrics : regionsMetrics) {
+            System.out.println(">>> Memory Region Name: " + metrics.getName());
+            System.out.println(">>> Allocation Rate: " + metrics.getAllocationRate());
+            System.out.println(">>> Fill Factor: " + metrics.getPagesFillFactor());
+            System.out.println(">>> Allocated Size: " + metrics.getTotalAllocatedSize());
+            System.out.println(">>> Physical Memory Size: " + metrics.getPhysicalMemorySize());
         }
     }
 

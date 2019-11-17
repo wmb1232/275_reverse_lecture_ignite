@@ -49,18 +49,7 @@ public class CacheApiExample {
             System.out.println();
             System.out.println(">>> Cache API example started.");
 
-            // Get the metrics of all the data regions configured on a node.
-            Collection<DataRegionMetrics> regionsMetrics = ignite.dataRegionMetrics();
-
-            for (DataRegionMetrics metrics : regionsMetrics) {
-                System.out.println(">>> Memory Region Name: " + metrics.getName());
-                System.out.println(">>> Allocation Rate: " + metrics.getAllocationRate());
-                System.out.println(">>> Fill Factor: " + metrics.getPagesFillFactor());
-//                System.out.println(">>> Allocated Size: " + metrics.getTotalAllocationSize());
-                System.out.println(">>> Allocated Size: " + metrics.getTotalAllocatedSize());
-                System.out.println(">>> Physical Memory Size: " + metrics.getPhysicalMemorySize());
-            }
-
+            printMetrics(ignite);
             CacheConfiguration<Integer, String> cfg = new CacheConfiguration<>();
 
             cfg.setCacheMode(CacheMode.PARTITIONED);
@@ -70,11 +59,14 @@ public class CacheApiExample {
             try (IgniteCache<Integer, String> cache = ignite.getOrCreateCache(cfg)) {
                 // Demonstrate atomic map operations.
                 atomicMapOperations(cache);
+                printMetrics(ignite);
+
             }
             finally {
                 // Distributed cache could be removed from cluster only by #destroyCache() call.
                 ignite.destroyCache(CACHE_NAME);
             }
+
         }
     }
 
@@ -117,5 +109,20 @@ public class CacheApiExample {
         b1 = cache.replace(7, "7", "77");
         b2 = cache.replace(7, "7", "777");
         assert b1 & !b2;
+    }
+
+    public static void printMetrics(final Ignite ignite) {
+        // Get the metrics of all the data regions configured on a node.
+        Collection<DataRegionMetrics> regionsMetrics = ignite.dataRegionMetrics();
+
+        for (DataRegionMetrics metrics : regionsMetrics) {
+            System.out.println(">>> Memory Region Name: " + metrics.getName());
+            System.out.println(">>> Allocation Rate: " + metrics.getAllocationRate());
+            System.out.println(">>> Fill Factor: " + metrics.getPagesFillFactor());
+//                System.out.println(">>> Allocated Size: " + metrics.getTotalAllocationSize());
+            System.out.println(">>> Allocated Size: " + metrics.getTotalAllocatedSize());
+            System.out.println(">>> Physical Memory Size: " + metrics.getPhysicalMemorySize());
+        }
+
     }
 }

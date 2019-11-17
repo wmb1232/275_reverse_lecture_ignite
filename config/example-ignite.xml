@@ -80,7 +80,7 @@
 
                             <!-- Enable metrics for this data region  -->
                             <property name="metricsEnabled" value="true"/>
-
+                            <property name="maxSize" value="#{1L * 1024 * 1024 * 1024}"/>
                         </bean>
                     </list>
                 </property>

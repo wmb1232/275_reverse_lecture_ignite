@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import java.util.Collection;
 import java.util.concurrent.ConcurrentMap;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.IgniteCache;
@@ -22,6 +23,7 @@ import org.apache.ignite.IgniteException;
 import org.apache.ignite.Ignition;
 import org.apache.ignite.cache.CacheMode;
 import org.apache.ignite.configuration.CacheConfiguration;
+import org.apache.ignite.DataRegionMetrics;
 
 /**
  * This example demonstrates some of the cache rich API capabilities.
@@ -46,6 +48,18 @@ public class CacheApiExample {
         try (Ignite ignite = Ignition.start("config/example-ignite.xml")) {
             System.out.println();
             System.out.println(">>> Cache API example started.");
+
+            // Get the metrics of all the data regions configured on a node.
+            Collection<DataRegionMetrics> regionsMetrics = ignite.dataRegionMetrics();
+
+            for (DataRegionMetrics metrics : regionsMetrics) {
+                System.out.println(">>> Memory Region Name: " + metrics.getName());
+                System.out.println(">>> Allocation Rate: " + metrics.getAllocationRate());
+                System.out.println(">>> Fill Factor: " + metrics.getPagesFillFactor());
+//                System.out.println(">>> Allocated Size: " + metrics.getTotalAllocationSize());
+                System.out.println(">>> Allocated Size: " + metrics.getTotalAllocatedSize());
+                System.out.println(">>> Physical Memory Size: " + metrics.getPhysicalMemorySize());
+            }
 
             CacheConfiguration<Integer, String> cfg = new CacheConfiguration<>();
 

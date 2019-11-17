@@ -70,5 +70,22 @@
                 </property>
             </bean>
         </property>
+        <property name="dataStorageConfiguration">
+            <bean class="org.apache.ignite.configuration.DataStorageConfiguration">
+                <property name="dataRegionConfigurations">
+                    <list>
+                        <bean class="org.apache.ignite.configuration.DataRegionConfiguration">
+                            <!-- Custom region name. -->
+                            <property name="name" value="myDataRegion"/>
+
+                            <!-- Enable metrics for this data region  -->
+                            <property name="metricsEnabled" value="true"/>
+
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+
     </bean>
 </beans>

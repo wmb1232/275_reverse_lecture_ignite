@@ -1,1 +1,1 @@
-echo # 275_reverse_lecture_ignite
+# 275_reverse_lecture_ignite
